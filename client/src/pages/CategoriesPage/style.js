@@ -31,6 +31,7 @@ export const GenreTitleBtn = styled.div`
   padding-top: 80px;
 `
 export const GenreTitle = styled.h1`
+  text-align: center;
   color: #f9fbe7;
 `
 export const InfoDescription = styled.p`
@@ -59,6 +60,7 @@ export const List = styled.div`
 `
 export const ListDescription = styled.p`
   font-size: 18px;
+  text-align: center;
   color: #f9fbe7;
   padding-top: 20px;
 `

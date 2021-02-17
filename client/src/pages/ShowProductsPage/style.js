@@ -97,3 +97,9 @@ export const LoaderWrap = styled.div`
   display: flex;
   justify-content:center;
 `
+export const FilterEmptyText = styled.p`
+  font-size: 18px;
+  text-align: center;
+  margin: 0 auto;
+  color: #f9fbe7;
+`

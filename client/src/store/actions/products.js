@@ -54,7 +54,7 @@ export function fetchProductsError(e) {
 export function productHandler(dataModalForm) {
   return async dispatch => {
     const {
-      isNewProduct, handleClose, isOpenModalMessage, isCloseModalMessage, products, name, price,
+      isNewProduct, handleClose, products, name, price,
       description, selectedFile, selectedFileName, productId, categoryId
     } = dataModalForm
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dmbjlzkjb/upload'
@@ -86,20 +86,16 @@ export function productHandler(dataModalForm) {
       formData.append('image', selectedFile, selectedFileName)
       formData.append('public_id', cloudinaryId)
 
-      console.log('0000000000000000000000000 formData: ', formData)
       if (isNewProduct) {
-        console.log('111111111111111111111111111 ', categoryId, token)
         const response = await axios.post('/api/product', formData, {headers: {Authorization: token}})
-        console.log('22222222222222222222222222')
         const product = response.data
-        console.log('33333333333333333333333333: ', product)
 
-        message = `Фильм "${name}" успешно добавлен.`
+        message = `Product "${name}" added successfully.`
 
         products.push(product)
       } else {
         const response = await axios.patch(`/api/product/${productId}`, formData, {headers: {Authorization: token}})
-        message = `Фильм "${name}" успешно отредактирован.`
+        message = `Product "${name}" edited successfully.`
         const product = response.data
         let idx = -1
 
@@ -113,16 +109,13 @@ export function productHandler(dataModalForm) {
         if (idx > -1) products.splice(idx, 1, product)
       }
 
-      console.log('message @@@: ', message)
       dispatch(productHandlerSuccess(message))
       dispatch(openMessage())
       setTimeout(() => {
         dispatch(closeMessage())
         if (!isNewProduct) handleClose()
       }, 3000)
-      // dispatch(productHandlerSuccess(message))
     } catch (e) {
-      console.log(e)
       const message = e.message
       dispatch(productHandlerError(e, message))
       dispatch(openMessage())

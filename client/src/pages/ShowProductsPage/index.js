@@ -1,27 +1,22 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {connect, useDispatch, useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import Button from '@material-ui/core/es/Button/Button'
 import IconButton from '@material-ui/core/es/IconButton/IconButton'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import CircularProgress from '@material-ui/core/es/CircularProgress/CircularProgress'
 import Snackbar from '@material-ui/core/es/Snackbar/Snackbar'
-import {indigo, lime} from '@material-ui/core/colors'
-import {lightGreen, pink} from '@material-ui/core/colors/index'
+import {indigo, lightGreen, lime, pink} from '@material-ui/core/colors'
 import Grid from '@material-ui/core/Grid'
-
-// import ModalForm from '../AddFilm/ModalForm'
-// import SearchFilms from '../SearchFilms/SearchFilms'
-// import RenderFilmItem from './RenderFilmItem'
+import RenderProductItem from './RenderProductItem'
 import {addProduct, changeProduct, closeModalProduct, deleteProduct, fetchProducts, openModalProduct} from '../../store/actions/products'
 import {AddProductBlock, Container, LoaderWrap, MessageText, ProductList, Row, Title, WrapBtn} from './style'
-import {ModalForm} from '../../conponents'
-import RenderProductItem from "./RenderProductItem";
+import {ModalForm, SearchByProducts} from '../../conponents'
 
 
 const ShowProductsPage = () => {
   const [isFormFilter, setIsFormFilter] = useState(false)
   const [query, setQuery] = useState('')
-  const [columnToQuery, setColumnToQuery] = useState('Product title')
+  const [columnToQuery, setColumnToQuery] = useState('Product name')
 
   const dispatch = useDispatch()
   const products = useSelector(({products}) => products)
@@ -38,11 +33,11 @@ const ShowProductsPage = () => {
 
   const onChangeColumnToQuery = e => {
     setColumnToQuery(e.target.value)
+    setQuery('')
   }
 
   const openModalProductHandler = () => {
     dispatch(openModalProduct())
-    // dispatch(addProduct())
     setIsFormFilter(false)
     setQuery('')
   }
@@ -59,8 +54,8 @@ const ShowProductsPage = () => {
     dispatch(changeProduct())
   }
 
-  const onDeleteProductHandler = () => {
-    dispatch(deleteProduct())
+  const onDeleteProductHandler = (name, id) => {
+    dispatch(deleteProduct(name, id))
   }
 
   return (
@@ -77,7 +72,7 @@ const ShowProductsPage = () => {
             Add product
           </Button>
           {
-            !products.loading && products.length >= 2
+            !products.loading && products.products.length >= 2
               ? <IconButton
                 onClick={toggleFilter}
                 style={{
@@ -106,16 +101,16 @@ const ShowProductsPage = () => {
           <Title>
             List of products by category "{category.name}"
           </Title>
-          {/*{
+          {
             products.products.length >= 2 && isFormFilter
-              ? <SearchFilms
+              ? <SearchByProducts
                 query={query}
                 columnToQuery={columnToQuery}
                 onChangeQuery={onChangeQuery}
                 onChangeColumnToQuery={onChangeColumnToQuery}
               />
               : null
-          }*/}
+          }
           {
             !products.loading
               ? <Row>

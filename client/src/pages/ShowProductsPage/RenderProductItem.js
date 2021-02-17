@@ -1,22 +1,17 @@
 import React from 'react'
-import {lightGreen, lime, pink} from '@material-ui/core/colors/index'
+import {lightGreen, pink} from '@material-ui/core/colors'
 import IconButton from '@material-ui/core/es/IconButton/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import Grid from '@material-ui/core/Grid'
+
 import {
-  ProductDescription,
-  ProductImage,
-  ProductItem,
-  ProductPopups,
-  ProductPrice,
-  ProductTitle,
-  WrapProductIconBtn
-} from "./style";
+  FilterEmptyText, ProductDescription, ProductImage, ProductItem,
+  ProductPopups, ProductPrice, ProductTitle, WrapProductIconBtn
+} from './style'
 
 
-const RenderProductItem = ({query, columnToQuery, products, openModalProduct, changeProduct, deleteProduct, clickChangeProduct, productModalRef}) => {
-  console.log('products @@@@@@@: ', products.products)
+const RenderProductItem = ({query, columnToQuery, products, openModalProduct, changeProduct, deleteProduct, productModalRef}) => {
   let productsSort = products.products.sort((a, b) => a.name.localeCompare(b.name))
   const lowerCaseQuery = query.toLowerCase()
 
@@ -30,16 +25,21 @@ const RenderProductItem = ({query, columnToQuery, products, openModalProduct, ch
     }
   } else if (columnToQuery === 'Price') {
     if (query) {
-      productsSort = products.products.filter(x => x.year.toString().toLowerCase().includes(query.toString().toLowerCase()) ? true : null)
+      productsSort = products.products.filter(x => x.price.toString().toLowerCase().includes(query.toString().toLowerCase()) ? true : null)
     }
   } else {
     productsSort = products.products.sort((a, b) => a.name.localeCompare(b.name))
   }
 
+  const editProduct =(product) => {
+    openModalProduct()
+    changeProduct()
+    productModalRef.current.updateProduct(product)
+  }
+
 
   if (productsSort.length) {
-    return productsSort.map(product => {
-      return (
+    return productsSort.map(product => (
         <Grid key={product._id} item xs={12} sm={4} md={3}>
           <ProductItem>
             <ProductPopups>
@@ -48,13 +48,7 @@ const RenderProductItem = ({query, columnToQuery, products, openModalProduct, ch
               <ProductDescription>{product.description}</ProductDescription>
               <WrapProductIconBtn>
                 <IconButton
-                  onClick={() => {
-                    console.log('AAAAAAAAAAA')
-                    openModalProduct()
-                    changeProduct()
-                    // clickChangeProduct(product)
-                    productModalRef.current.updateProduct(product)
-                  }}
+                  onClick={editProduct}
                   style={{color: lightGreen.A400}}
                   className="button"
                   aria-label="Edit"
@@ -71,7 +65,6 @@ const RenderProductItem = ({query, columnToQuery, products, openModalProduct, ch
                 </IconButton>
               </WrapProductIconBtn>
             </ProductPopups>
-            {/*<img className="film-img" src={`../../../../${film.imageSrc}`} alt={film.name}/>*/}
             <ProductImage
               src={`../../../../${product.imageSrc}`}
               // src={`https://res.cloudinary.com/dmbjlzkjb/image/upload/v1551823423/${product.public_id}`}
@@ -79,13 +72,12 @@ const RenderProductItem = ({query, columnToQuery, products, openModalProduct, ch
             />
           </ProductItem>
         </Grid>
-      )
-    })
+      ))
   } else {
     return (
-      <p style={{fontWeight: 400, fontSize: 18, color: lime["50"]}}>
-        Извините... Фильма соответствующего критериям Вашего поиска у нас нет...
-      </p>
+      <FilterEmptyText>
+        Sorry... We don't have a product matching your search criteria...
+      </FilterEmptyText>
     )
   }
 }
